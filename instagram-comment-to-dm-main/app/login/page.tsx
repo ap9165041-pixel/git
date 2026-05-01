@@ -41,7 +41,7 @@ export default function LoginPage() {
             {/* Feature list */}
             <div className="space-y-3">
               {[
-                { icon: "⚡", text: "Instant DMs on keyword comments" },
+                { icon: "⚡", text: "Instant DMs on hi keyword comments" },
                 { icon: "🔒", text: "Official Meta API — no ban risk" },
                 { icon: "📊", text: "Track every DM in real-time" },
               ].map((feature) => (
