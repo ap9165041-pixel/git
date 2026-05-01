@@ -1,13 +1,12 @@
 // InstaReply — Prisma Schema
-// Instagram Comment → Auto-DM SaaS
 
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -17,11 +16,10 @@ model User {
   createdAt DateTime @default(now())
   plan      Plan     @default(FREE)
 
-  // Instagram connection
-  instagramId       String?   @unique
+  instagramId        String?   @unique
   instagramUsername  String?
-  accessToken       String? // encrypted via AES-256-GCM
-  tokenExpiresAt    DateTime?
+  accessToken        String?
+  tokenExpiresAt     DateTime?
 
   automations Automation[]
   dmLogs      DmLog[]
@@ -33,13 +31,11 @@ model Automation {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   name      String
-  postId    String // Instagram Media ID
+  postId    String
   postUrl   String?
-  keywords  String[] // e.g. ["LINK", "PRICE", "INFO"]
-  dmMessage String // The DM to send
+  keywords  String[]
+  dmMessage String
   isActive  Boolean  @default(true)
-
-  // Whether to match whole words only (false = partial match allowed)
   wholeWordMatch Boolean @default(true)
 
   createdAt DateTime @default(now())
@@ -55,16 +51,18 @@ model DmLog {
   id           String     @id @default(cuid())
   automationId String
   automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
-  userId       String
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  commenterId   String // Instagram user ID who commented
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  commenterId   String
   commenterName String?
   commentText   String
-  commentId     String    @unique // dedup key
-  dmSentAt      DateTime?
-  status        DmStatus  @default(PENDING)
-  errorMessage  String?
+  commentId     String    @unique
+
+  dmSentAt     DateTime?
+  status       DmStatus   @default(PENDING)
+  errorMessage String?
 
   createdAt DateTime @default(now())
 
